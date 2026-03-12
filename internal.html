@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>internal</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: rgb(231, 231, 205);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .cal {
+      background: rgb(234, 227, 130);
+      padding: 20px 30px;
+      border-radius: 10px;
+      width: 300px;
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      width: 48%;
+      padding: 10px;
+      background: #0a6415;
+      color: #fff;
+      border-style: dashed;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 5px 1%;
+    }
+
+    .watermark {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-30deg);
+      font-size: 80px;
+      color: rgba(0, 0, 0, 0.08);
+      font-weight: bold;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .to-clear {
+      background: #6990dc;
+    }
+
+    .to-clear:hover {
+      background: #e62f42;
+    }
+
+    .result {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .pass-msg {
+      color: #0a6415;
+      background: #d4f8d4;
+      padding: 12px;
+      border-radius: 10px;
+      margin-top: 12px;
+      animation: pop 0.6s ease;
+    }
+
+    .fail-msg {
+      color: #a00000;
+      background: #ffd6d6;
+      padding: 12px;
+      border-radius: 10px;
+      margin-top: 12px;
+      animation: shake 0.5s ease;
+    }
+
+    @keyframes pop {
+      0% {
+        transform: scale(0.5);
+        opacity: 0;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes shake {
+      0% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-5px);
+      }
+
+      50% {
+        transform: translateX(5px);
+      }
+
+      75% {
+        transform: translateX(-5px);
+      }
+
+      100% {
+        transform: translateX(0);
+      }
+    }
+
+
+    .confetti {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: red;
+      top: 0;
+      animation: fall 3s linear forwards;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <body>
+<div class="watermark">DK</div>
+  <div class="cal">
+    <h2>Marks Calculator(R24)</h2>
+    <input type="number" id="aat1" placeholder="Enter AAT1 Marks(10)">
+    <input type="number" id="aat2" placeholder="Enter AAT2 Marks(10)">
+    <input type="number" id="mid1" placeholder="Enter Mid1 Marks(30)">
+    <input type="number" id="mid2" placeholder="Enter Mid2 Marks(30)">
+    <input type="number" id="atdc" placeholder="Enter Attendence(%)">
+    <div>
+      <button onclick="calculate()">calculate</button>
+      <button class="to-clear" onclick="clearAll()">Clear</button>
+    </div>
+    <div id="result" class="result"></div>
+  </div>
+  <script>
+    function aat(aat1, aat2) {
+      let marks = ((aat1 + aat2) / 2) * 1.5;
+      return Number(marks.toFixed(2));
+    }
+
+    function mid(mid1, mid2) {
+      let marks;
+      if (mid1 > mid2) {
+        marks = mid1 * 0.75 + mid2 * 0.25;
+      } else {
+        marks = mid2 * 0.75 + mid1 * 0.25;
+      }
+      marks *= (20 / 30);
+      return Number(marks.toFixed(2));
+    }
+
+    function atd(atdc) {
+      if (atdc >= 90) return 5;
+      else if (atdc >= 85) return 4;
+      else if (atdc >= 80) return 3;
+      else if (atdc >= 75) return 2;
+      else return 0;
+    }
+
+    function calculate() {
+      let aat1 = Number(document.getElementById("aat1").value);
+      let aat2 = Number(document.getElementById("aat2").value);
+      let mid1 = Number(document.getElementById("mid1").value);
+      let mid2 = Number(document.getElementById("mid2").value);
+      let atdc = Number(document.getElementById("atdc").value);
+
+      if (aat1 > 10 || aat2 > 10 || mid1 > 30 || mid2 > 30 || atdc > 100) {
+        alert("Invalid marks entered!");
+        return;
+      }
+
+      let total = aat(aat1, aat2) + mid(mid1, mid2) + atd(atdc);
+      document.getElementById("result").innerText = "Final Marks: " + Math.round(total);
+      let resultBox = document.getElementById("result");
+
+      if (total >= 20) {
+        resultBox.className = "result pass-msg";
+        resultBox.innerHTML = "🎉 Congratulations!<br>Final Marks: " + Math.round(total) + "<br>You PASSED the internal!";
+        confettiEffect();
+        vibratePass();
+      }
+      else {
+        resultBox.className = "result fail-msg";
+        resultBox.innerHTML = "😔 OOPS!<br>Final Marks: " + Math.round(total) + "<br>Keep studying and try again!";
+      }
+    }
+
+    function clearAll() {
+      document.querySelectorAll("input").forEach(input => input.value = "");
+      document.getElementById("result").innerText = "";
+      document.getElementById("aat1").focus();
+    }
+
+    document.querySelectorAll("input").forEach((input, index, inputs) => {
+      input.addEventListener("keydown", function (event) {
+        if (event.key === "ArrowDown" || event.key === "Enter") {
+          event.preventDefault();
+          if (index < inputs.length - 1) {
+            inputs[index + 1].focus();
+          } else {
+            calculate();
+          }
+        }
+        else if (event.key === "ArrowUp") {
+          event.preventDefault();
+          if (index > 0) {
+            inputs[index - 1].focus();
+          }
+        }
+      });
+    });
+    function confettiEffect() {
+      for (let i = 0; i < 40; i++) {
+        let confetti = document.createElement("div");
+        confetti.classList.add("confetti");
+
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.backgroundColor =
+          ["red", "blue", "yellow", "green", "orange", "purple"][Math.floor(Math.random() * 6)];
+
+        document.body.appendChild(confetti);
+
+        setTimeout(() => confetti.remove(), 3000);
+      }
+    }
+    function vibratePass() {
+      if (navigator.vibrate) {
+        navigator.vibrate([200, 100, 200]);
+      }
+    }
+  </script>
+</body>
+
+</html>
