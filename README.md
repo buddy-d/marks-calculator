@@ -19,11 +19,14 @@ Building intelligent web applications
 
 ➡️ Projects
 
-🔹 AI Chatbot Web App  
-🔹 Movie Recommendation System (Full Stack)  
-🔹 Resume Analyzer using AI  
-🔹 House Price Prediction  
+ 🎬 Movie Recommendation System
+- Built using Python, Pandas, Scikit-learn  
+- Recommends movies based on user preferences  
 
+
+### 💬 AI Chatbot Web App (In Progress)
+- Full Stack + AI integration  
+- Flask backend + frontend UI
 
 📲Connect with Me
 - Email: ndk8690@gmail.com.com  
